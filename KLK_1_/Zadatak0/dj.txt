@@ -1,0 +1,109 @@
+-- 1
+select nazkup
+from kupac
+where upper(mestkup) = 'NOVI SAD'
+order by nazkup;
+
+select * from kupac;
+
+-- 2
+select brfak
+from faktura
+where datum between '01-jan-2010' and '31-dec-2010';
+
+select * from faktura;
+
+--3
+select brfak, nazkup
+from faktura f, kupac k
+where f.idkup = k.idkup;
+
+--4
+select brfak
+from faktura f, kupac k
+where f.idkup = k.idkup and k.idkup in ('K1', 'K2')
+order by brfak desc;
+
+--5
+select idart, nazart
+from artikal
+where jcena between 15 and 450
+order by idart asc, nazart desc;
+
+--6 
+select nazart, sum(kol)
+from artikal a, stavka s
+where a.idart = s.idart 
+group by a.idart, nazart;
+
+--7
+select distinct nazkup, nazart
+from kupac k, artikal a, faktura f, stavka s
+where k.idkup = f.idkup and f.brfak = s.brfak and s.idart = a.idart;
+
+--8
+select rbrst, jcena
+from stavka s, artikal a
+where brfak = 'F4' and a.idart = s.idart and lower(nazart) like '%a%';
+
+ -- Maja:
+select f.brfak, s.rbrst, s.cena/s.kol cenapokomadu, nazart
+from faktura f, stavka s, artikal a
+where f.brfak = s.brfak and f.brfak = 'F4' and a.idart = s.idart
+and a.nazart like '%a%'
+order by f.brfak;
+
+--9 - NE KONTAM??????????????????????????????????
+with kolpofakturi(brfak, nazart, fkol) as (
+select f.brfak, nazart ,sum(kol)
+from faktura f, artikal a, stavka s
+where f.brfak = s.brfak and s.idart = a.idart
+group by f.brfak, nazart)
+select f.brfak, nazart
+from kolpofakturi kpf, kupac k, faktura f
+where k.idkup = f.idkup and f.brfak = kpf.brfak 
+group by f.brfak, nazart
+having sum(fkol) > 2000;
+
+
+with robapokupcu as (
+    select k.nazkup n, sum(s.kol) kolicinafakturisanerobe
+    from faktura f, stavka s, artikal a, kupac k
+    where k.idkup = f.idkup and f.brfak = s.brfak and s.idart = a.idart
+    group by k.nazkup)
+select k.nazkup, f.brfak, a.nazart, rpk.kolicinafakturisanerobe
+from faktura f, stavka s, artikal a, kupac k, robapokupcu rpk
+where k.idkup = f.idkup and f.brfak = s.brfak and s.idart = a.idart and rpk.n = k.nazkup
+and rpk.kolicinafakturisanerobe > 2000
+order by f.brfak desc;
+
+
+
+
+--10
+select nazkup, count(brfak)
+from kupac k, faktura f
+where k.idkup = f.idkup(+)
+group by k.idkup, nazkup;
+
+
+--11
+create or replace view TopArtikl(ida,naza) as
+select a.idart, nazart
+from artikal a,  stavka s
+where a.idart = s.idart 
+group by a.idart, nazart
+having sum(kol) > (select avg(kol) from stavka);
+
+
+--12
+create table Popust (
+    idpop int not null,
+    nazpop varchar2(30),
+    datumpocetka date not null,
+    datumzavrsetka date not null,
+    idart varchar2(2) not null,
+    constraint popust_pk primary key (idpop),
+    constraint popust_fk foreign key (idart) references Artikal(idart));
+
+--13 

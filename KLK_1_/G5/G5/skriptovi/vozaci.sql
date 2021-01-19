@@ -1,0 +1,9 @@
+insert into vozac(idv, imev, prezv, godrodj, brojtit, drzv) values (1, 'Kimmi', 'Raikkonen', '1979', 1, 1);
+insert into vozac(idv, imev, prezv, godrodj, brojtit, drzv) values (2, 'Lewis', 'Hamilton', '1985', 6, 5);
+insert into vozac(idv, imev, prezv, godrodj, brojtit, drzv) values (3, 'Sebastian', 'Vettel', '1987', 4, 3);
+insert into vozac(idv, imev, prezv, godrodj, brojtit, drzv) values (4, 'Michael', 'Schumacher', '1969', 7, 3);
+insert into vozac(idv, imev, prezv, godrodj, brojtit, drzv) values (5, 'Ayrton', 'Senna', '1960', 3, 4);
+insert into vozac(idv, imev, prezv, godrodj, brojtit, drzv) values (6, 'Alain', 'Prost', '1950', 4, 7);
+insert into vozac(idv, imev, prezv, godrodj, brojtit, drzv) values (7, 'Nico', 'Hulkenberg', '1987', 0, 3);
+insert into vozac(idv, imev, prezv, godrodj, brojtit, drzv) values (8, 'Rubens', 'Barrichelo', '1972', 0, 4);
+insert into vozac(idv, imev, prezv, godrodj, brojtit, drzv) values (9, 'Nikki', 'Lauda', '1949', 3, NULL);

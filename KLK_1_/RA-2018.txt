@@ -1,0 +1,97 @@
+--1
+
+select idz,nazivz
+from zanr
+order by nazivz desc;
+
+
+--2
+
+select idf,nazivf
+from film
+where nazivf like '%p%' or nazivf like '%P%';
+
+
+--3
+
+alter table zanr
+add (skracenicaz varchar2(3) null);
+
+
+--4
+
+select distinct korimek,imek,przk
+from korisnik k,ocena o,film f
+where k.korimek=o.korimeo and o.filmo=f.idf
+and f.trajanjef = (select min(trajanjef)
+                  from film);
+                  
+                  
+--5
+
+select distinct z.idz,z.nazivz,k.korimek,k.imek,k.przk
+from zanr z,film f,ocena o,korisnik k
+where z.idz=f.zanrf and f.idf=o.filmo and o.korimeo=k.korimek
+order by z.nazivz asc;
+
+
+--6
+
+select idf,nazivf
+from film f,ocena o
+where f.idf=o.filmo
+minus
+select idf,nazivf
+from film f,ocena o
+where f.idf=o.filmo
+and o.korimeo in (select korimek
+                  from korisnik
+                  where UPPER(polk) = 'M');
+                  
+                  
+--7
+
+select z.idz,z.nazivz,count(distinct k.korimek) as BrojKorisnika
+from zanr z,film f,ocena o,korisnik k
+where z.idz=f.zanrf(+) and f.idf=o.filmo(+) and o.korimeo=k.korimek(+)
+group by z.idz,z.nazivz
+having count(distinct k.korimek)<=3;
+
+--8
+
+update film
+set nazivf=nazivf || '-kratki'
+where trajanjef < 100;
+
+select * from film;
+
+--9
+
+create or replace view Prosecno_Trajanje_Po_Korisniku as
+select k.korimek,k.imek,k.przk,nvl(round(avg(f.trajanjef),2),0) as prosjecnoTrajanjeFilma
+from korisnik k,ocena o,film f
+where k.korimek=o.korimeo(+) and o.filmo=f.idf(+)
+group by k.korimek,k.imek,k.przk;
+
+
+select * from Prosecno_Trajanje_Po_Korisniku;
+
+
+--10
+
+with ukupnoOcena as
+(select f.idf,nvl(count(o.filmo),0) as brojOcena
+from film f,ocena o
+where f.idf=o.filmo(+)
+group by f.idf),
+brOcVecihOdPet as
+(select f.idf,count(o.ocenao) as ocena
+from film f,ukupnoOcena uo,ocena o
+where f.idf=uo.idf and uo.idf=o.filmo and o.ocenao > 5 and o.ocenao <= 8
+group by f.idf
+)
+select f.idf,f.nazivf,uo.brojOcena
+from film f,ukupnoOcena uo
+where f.idf=uo.idf;
+
+

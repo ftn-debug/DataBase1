@@ -1,0 +1,105 @@
+--1 
+select idk, nazivk, proizvodjac
+from komponenta 
+order by proizvodjac desc;
+
+--2
+select idr, nazivr 
+from racunar 
+where nazivr like '_%' || ' ' || '_%' || ' ' || '_%'; 
+
+--3
+alter table akcija
+add constraint akcija_ch check (popust > 0);
+
+--4
+select * 
+from komponenta 
+where tip = 'GPU' and cena <= all (select cena 
+                                    from komponenta 
+                                   where tip = 'GPU');
+
+--5
+with rSaGPUkomp as(
+select distinct r.idr, nazivr
+from racunar r, konfiguracija kon, komponenta kom
+where r.idr = kon.idr and kon.idk = kom.idk and tip = 'GPU')
+select idr, nazivr
+from racunar
+where idr not in (select idr 
+                  from rSaGPUkomp) and nazivr not in (select nazivr
+                                                     from rSaGPUkomp);
+                                                     
+--6
+select r.idr, nazivr
+from racunar r, konfiguracija kon, komponenta kom
+where r.idr = kon.idr and kon.idk = kom.idk 
+and exists (select * from komponenta k, akcija a 
+            where kom.idk = k.idk and k.akc = a.ida and naziva = 'Black Friday II');
+            
+   
+--7 
+select proizvodjac, count(distinct r.idr) brRac
+from racunar r, konfiguracija kon, komponenta kom
+where r.idr = kon.idr(+) and kon.idk = kom.idk(+)
+group by kom.idk, proizvodjac
+having count(distinct r.idr) <= 2;
+
+--8
+update komponenta
+set nazivk = 'GeForce-' || nazivk
+where proizvodjac = 'nVidia';
+
+--9
+create or replace view Pogled_AvgCenePoTipu(tip, cijena) as
+select tip, round(avg(cena*(100-nvl(popust,0))/100),2)
+from komponenta k, akcija a
+where k.akc = a.ida
+group by tip;
+
+--
+SELECT tip,round( avg( cena*(( 100-nvl(popust,0))/100)),2) novaAVGcena
+FROM komponenta k , akcija a
+where k.akc=a.ida(+)
+group by tip
+;
+
+--10
+with cijenaPoRac as (
+select r.idr, nazivr, sum(kom.cena*(100-nvl(popust,0))/100) cijena
+from racunar r, konfiguracija kon, komponenta kom, akcija a
+where r.idr = kon.idr and kon.idk = kom.idk and kom.akc = a.ida
+group by r.idr, nazivr)
+select idr, nazivr
+from cijenaPoRac cpr
+where cijena <= all (select cijena from cijenaPoRac);
+
+---
+--cena 
+select r.idr,nazivr,sum(cena*(100-nvl(popust,0))/100*komada) cenaRacunara
+from racunar r, konfiguracija kf,komponenta k, akcija a
+where r.idr=kf.idr and kf.idk=k.idk and k.akc=a.ida(+)
+group by r.idr,r.nazivr
+having sum(cena*(100-nvl(popust,0))/100*komada)=(select min(sum(cena*(100-nvl(popust,0))/100*komada)) 
+                                                    from racunar r, konfiguracija kf,komponenta k, akcija a
+                                                    where r.idr=kf.idr and kf.idk=k.idk and k.akc=a.ida(+)
+                                                    group by r.idr,r.nazivr
+                                                    )
+; 
+
+II klk
+--7
+
+select korimek,k.imek,k.przk--, nvl(o.filmo,0),nvl(o.ocenao,0)
+from korisnik k ,ocena o
+where o.korimeo(+)=k.korimek and o.filmo is null
+
+union
+
+--broj zanrova po korisniku
+select k.korimek,k.imek,k.przk--,count(distinct(f.zanrf))
+from korisnik k ,ocena o,film f
+where o.korimeo=k.korimek  and f.idf=o.filmo
+group by k.korimek,k.imek,k.przk
+having count(distinct(f.zanrf))<=2
+;

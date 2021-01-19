@@ -1,0 +1,15 @@
+insert into komponenta values (1, 'X570 Plus', 'maticna', 'MSI', 24900.0, 1);
+insert into komponenta values (2, 'B450 Tomahawk', 'maticna', 'MSI', 15000.0, 5);
+insert into komponenta values (3, '8GB DDR3 KVR100', 'RAM', 'Kingston', 8000.0, null);
+insert into komponenta values (4, '16GB DDR4 HX400 ', 'RAM', 'HYPERX', 14900.0, 1);
+insert into komponenta values (5, 'Radeon RX570', 'GPU', 'AMD', 32000.0, null);
+insert into komponenta values (6, 'GTX 1050ti', 'GPU', 'nVidia', 19900.0, 2);
+insert into komponenta values (7, 'RTX 2060', 'GPU', 'nVidia', 76900.0, null);
+insert into komponenta values (8, '512GB 860 PRO', 'SSD', 'Samsung', 19900.0, null);
+insert into komponenta values (9, '480GB SUV500MS', 'SSD', 'Kingston', 12700.0, 1);
+insert into komponenta values (10, 'i7-10700K 3.8GHz', 'CPU', 'Intel', 56700.0, 2);
+insert into komponenta values (11, 'RYZEN 3 3100 3.6GHz', 'CPU', 'AMD', 14900.0, 1);
+insert into komponenta values (12, 'RYZEN 5 3600 3.8GHz', 'CPU', 'AMD', 29000.0, 1);
+insert into komponenta values (13, '650W V1.3', 'napajanje', 'LC-Power', 6000.0, null);
+insert into komponenta values (14, 'HYPER 212 RGB', 'hladnjak', 'COOLER MASTER', 3250.0, null);
+commit;
